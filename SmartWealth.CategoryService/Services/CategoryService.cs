@@ -5,14 +5,16 @@ using SmartWealth.CategoryService.Models;
 using SmartWealth.CategoryService.Repository;
 using SmartWealth.CategoryService.ViewModels;
 using SmartWealth.CategoryService.Utilities.Exeptions;
+using CloudinaryDotNet.Actions;
 
 namespace SmartWealth.CategoryService.Services;
 
-public class CategoryService(IMapper mapper, IRepository<Category> repository, IValidator<CategoryViewModel> validator) : ICategoryService
+public class CategoryService(IMapper mapper, IRepository<Category> repository, IValidator<CategoryViewModel> validator, ICloudinaryService cloudinary) : ICategoryService
 {
     private readonly IMapper _mapper = mapper;
     private readonly IRepository<Category> _repository = repository;
     private readonly IValidator<CategoryViewModel> _validator = validator;
+    private readonly ICloudinaryService _cloudinary = cloudinary;
 
     public async Task<List<Category>> GetCategoriesAsync()
     {
@@ -34,7 +36,8 @@ public class CategoryService(IMapper mapper, IRepository<Category> repository, I
 
             if (createdCategory.Icon != null)
             {
-                // TODO: implement image upload service
+                ImageUploadResult result = await _cloudinary.UploadPhotoAsync(createdCategory.Icon);
+                category.IconUrl = result.Url.ToString();
             }
 
             await _repository.AddAsync(category);
@@ -55,7 +58,8 @@ public class CategoryService(IMapper mapper, IRepository<Category> repository, I
 
             if (editedCategory.Icon != null)
             {
-                // TODO: implement image upload service
+                ImageUploadResult result = await _cloudinary.UploadPhotoAsync(editedCategory.Icon);
+                category.IconUrl = result.Url.ToString();
             }
 
             await _repository.UpdateAsync(category);
