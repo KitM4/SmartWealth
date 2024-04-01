@@ -1,4 +1,4 @@
-﻿namespace SmartWealth.CategoryService.Utilities.Exeptions;
+﻿namespace SmartWealth.TransactionService.Utilities.Exceptions;
 
 public class AlreadyExistException : Exception
 {

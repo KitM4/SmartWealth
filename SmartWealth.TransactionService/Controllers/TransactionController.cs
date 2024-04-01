@@ -1,22 +1,35 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SmartWealth.CategoryService.Services;
-using SmartWealth.CategoryService.ViewModels;
-using SmartWealth.CategoryService.Utilities.Exceptions;
+using SmartWealth.TransactionService.Services;
+using SmartWealth.TransactionService.ViewModels;
+using SmartWealth.TransactionService.Utilities.Exceptions;
 
-namespace SmartWealth.CategoryService.Controllers;
+namespace SmartWealth.TransactionService.Controllers;
 
 [ApiController]
-[Route("api/category")]
-public class CategoryController(ICategoryService service) : Controller
+[Route("api/transaction")]
+public class TransactionController(ITransactionService service) : Controller
 {
-    private readonly ICategoryService _service = service;
+    private readonly ITransactionService _service = service;
 
     [HttpGet("all")]
-    public async Task<IActionResult> GetCategories()
+    public async Task<IActionResult> GetTransactions()
     {
         try
         {
-            return Ok(await _service.GetCategoriesAsync());
+            return Ok(await _service.GetTransactionsAsync());
+        }
+        catch (Exception exception)
+        {
+            return BadRequest(exception.Message);
+        }
+    }
+
+    [HttpGet("account/{id:guid}")]
+    public async Task<IActionResult> GetTransactionsByAccount(string id)
+    {
+        try
+        {
+            return Ok(await _service.GetTransactionsByAccountAsync(id));
         }
         catch (Exception exception)
         {
@@ -25,11 +38,11 @@ public class CategoryController(ICategoryService service) : Controller
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetCategory(Guid id)
+    public async Task<IActionResult> GetTransaction(Guid id)
     {
         try
         {
-            return Ok(await _service.GetCategoryAsync(id));
+            return Ok(await _service.GetTransactionAsync(id));
         }
         catch (NotFoundException notFoundException)
         {
@@ -42,11 +55,11 @@ public class CategoryController(ICategoryService service) : Controller
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> CreateCategory([FromBody] CategoryViewModel createdCategory)
+    public async Task<IActionResult> CreateTransaction([FromBody] TransactionViewModel createdTransaction)
     {
         try
         {
-            await _service.CreateCategoryAsync(createdCategory);
+            await _service.CreateTransactionAsync(createdTransaction);
             return Created();
         }
         catch (NotValidException notValidException)
@@ -60,11 +73,11 @@ public class CategoryController(ICategoryService service) : Controller
     }
 
     [HttpPut("edit/{id:guid}")]
-    public async Task<IActionResult> EditCategory(Guid id, [FromBody] CategoryViewModel editedCategory)
+    public async Task<IActionResult> EditTransaction(Guid id, [FromBody] TransactionViewModel editedTransaction)
     {
         try
         {
-            await _service.EditCategoryAsync(id, editedCategory);
+            await _service.EditTransactionAsync(id, editedTransaction);
             return Created();
         }
         catch (NotValidException notValidException)
@@ -82,11 +95,11 @@ public class CategoryController(ICategoryService service) : Controller
     }
 
     [HttpDelete("delete/{id:guid}")]
-    public async Task<IActionResult> DeleteCategory(Guid id)
+    public async Task<IActionResult> DeleteTransaction(Guid id)
     {
         try
         {
-            await _service.DeleteCategoryAsync(id);
+            await _service.DeleteTransactionAsync(id);
             return NoContent();
         }
         catch (NotFoundException notFoundException)
