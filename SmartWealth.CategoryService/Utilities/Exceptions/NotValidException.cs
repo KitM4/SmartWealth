@@ -1,4 +1,4 @@
-﻿namespace SmartWealth.CategoryService.Utilities.Exeptions;
+﻿namespace SmartWealth.CategoryService.Utilities.Exceptions;
 
 public class NotValidException : Exception
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartWealth.CategoryService.Models;
 using SmartWealth.CategoryService.Database;
-using SmartWealth.CategoryService.Utilities.Exeptions;
+using SmartWealth.CategoryService.Utilities.Exceptions;
 
 namespace SmartWealth.CategoryService.Repository;
 

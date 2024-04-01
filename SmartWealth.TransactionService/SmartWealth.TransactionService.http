@@ -1,0 +1,6 @@
+@SmartWealth.TransactionService_HostAddress = http://localhost:5255
+
+GET {{SmartWealth.TransactionService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

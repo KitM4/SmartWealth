@@ -4,7 +4,7 @@ using FluentValidation.Results;
 using SmartWealth.CategoryService.Models;
 using SmartWealth.CategoryService.Repository;
 using SmartWealth.CategoryService.ViewModels;
-using SmartWealth.CategoryService.Utilities.Exeptions;
+using SmartWealth.CategoryService.Utilities.Exceptions;
 using CloudinaryDotNet.Actions;
 
 namespace SmartWealth.CategoryService.Services;
