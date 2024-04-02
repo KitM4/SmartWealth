@@ -31,12 +31,12 @@ public class CategoryRepository(DatabaseContext context) : IRepository<Category>
 
     public async Task UpdateAsync(Category updatedItem)
     {
-        Category categoryToUpdate = await GetAsync(updatedItem.Id);
-
-        await _context.Categories.ExecuteUpdateAsync(setter => setter
-            .SetProperty(category => category.Name, updatedItem.Name)
-            .SetProperty(category => category.Description, updatedItem.Description)
-            .SetProperty(category => category.IconUrl, updatedItem.IconUrl));
+        await _context.Categories
+            .Where(category => category.Id == updatedItem.Id)
+            .ExecuteUpdateAsync(setter => setter
+                .SetProperty(category => category.Name, updatedItem.Name)
+                .SetProperty(category => category.Description, updatedItem.Description)
+                .SetProperty(category => category.IconUrl, updatedItem.IconUrl));
 
         await _context.SaveChangesAsync();
     }
