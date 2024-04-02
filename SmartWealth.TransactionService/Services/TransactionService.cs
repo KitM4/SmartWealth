@@ -33,22 +33,34 @@ public class TransactionService(IMapper mapper, IRepository<Transaction> reposit
     public async Task CreateTransactionAsync(TransactionViewModel createdTransaction)
     {
         ValidationResult validationResult = await _validator.ValidateAsync(createdTransaction);
-        if (!validationResult.IsValid)
+        if (validationResult.IsValid)
+        {
+            Transaction transaction = _mapper.Map<Transaction>(createdTransaction);
+            transaction.Id = Guid.NewGuid();
+            transaction.CreatedAt = DateTime.UtcNow;
+
+            await _repository.AddAsync(transaction);
+        }
+        else
+        {
             throw new NotValidException(string.Join("\n", validationResult.Errors.Select(x => x.ErrorMessage)));
-
-        Transaction transaction = _mapper.Map<Transaction>(createdTransaction);
-        transaction.CreatedAt = DateTime.UtcNow;
-
-        await _repository.AddAsync(transaction);
+        }
     }
 
     public async Task EditTransactionAsync(Guid id, TransactionViewModel editedTransaction)
     {
         ValidationResult validationResult = await _validator.ValidateAsync(editedTransaction);
-        if (!validationResult.IsValid)
-            throw new NotValidException(string.Join("\n", validationResult.Errors.Select(x => x.ErrorMessage)));
+        if (validationResult.IsValid)
+        {
+            Transaction transaction = _mapper.Map<Transaction>(editedTransaction);
+            transaction.Id = id;
 
-        await _repository.UpdateAsync(_mapper.Map<Transaction>(editedTransaction));
+            await _repository.UpdateAsync(transaction);
+        }
+        else
+        {
+            throw new NotValidException(string.Join("\n", validationResult.Errors.Select(x => x.ErrorMessage)));
+        }
     }
 
     public async Task DeleteTransactionAsync(Guid id)

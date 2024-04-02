@@ -6,5 +6,5 @@ public class CategoryViewModel
 
     public string? Description { get; set; }
 
-    public IFormFile? Icon { get; set; }
+    public IFormFile? Icon { get; set; } = null;
 }

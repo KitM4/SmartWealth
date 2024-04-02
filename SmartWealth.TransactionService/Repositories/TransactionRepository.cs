@@ -28,12 +28,12 @@ public class TransactionRepository(DatabaseContext context) : IRepository<Transa
 
     public async Task UpdateAsync(Transaction updatedItem)
     {
-        Transaction transactionToUpdate = await GetAsync(updatedItem.Id);
-
-        await _context.Transactions.ExecuteUpdateAsync(setter => setter
-            .SetProperty(transaction => transaction.Note, updatedItem.Note)
-            .SetProperty(transaction => transaction.Amount, updatedItem.Amount)
-            .SetProperty(transaction => transaction.CategoryId, updatedItem.CategoryId));
+        await _context.Transactions
+            .Where(transaction => transaction.Id == updatedItem.Id)
+            .ExecuteUpdateAsync(setter => setter
+                .SetProperty(transaction => transaction.Note, updatedItem.Note)
+                .SetProperty(transaction => transaction.Amount, updatedItem.Amount)
+                .SetProperty(transaction => transaction.CategoryId, updatedItem.CategoryId));
 
         await _context.SaveChangesAsync();
     }
