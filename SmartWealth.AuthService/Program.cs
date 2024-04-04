@@ -1,14 +1,21 @@
 using FluentValidation;
+using SmartWealth.AuthService.Models;
+using SmartWealth.AuthService.Services;
 using SmartWealth.AuthService.Database;
 using SmartWealth.AuthService.ViewModels;
 using SmartWealth.AuthService.Utilities.JWT;
 using SmartWealth.AuthService.Utilities.Mappers;
 using SmartWealth.AuthService.Utilities.Validators;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("Sqlite")));
+builder.Services.AddIdentity<User, IdentityRole<Guid>>().AddEntityFrameworkStores<DatabaseContext>().AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JwtOptions"));
