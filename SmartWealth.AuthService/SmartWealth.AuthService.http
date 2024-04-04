@@ -1,0 +1,6 @@
+@SmartWealth.AuthService_HostAddress = http://localhost:5288
+
+GET {{SmartWealth.AuthService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
