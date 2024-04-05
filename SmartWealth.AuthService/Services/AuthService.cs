@@ -1,8 +1,11 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using FluentValidation.Results;
+using CloudinaryDotNet.Actions;
 using SmartWealth.AuthService.Models;
 using SmartWealth.AuthService.Database;
 using SmartWealth.AuthService.ViewModels;
+using SmartWealth.AuthService.ViewModels.DTO;
 using SmartWealth.AuthService.Utilities.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
@@ -13,51 +16,57 @@ public class AuthService(
     DatabaseContext context,
     UserManager<User> userManager,
     SignInManager<User> signInManager,
+    IMapper mapper,
     IJwtService jwtService,
+    ICloudinaryService cloudinary,
     IValidator<UserLoginViewModel> loginValidator,
     IValidator<UserRegistrationViewModel> registrationValidator) : IAuthService
 {
     private readonly DatabaseContext _context = context;
     private readonly UserManager<User> _userManager = userManager;
     private readonly SignInManager<User> _signInManager = signInManager;
+
+    private readonly IMapper _mapper = mapper;
     private readonly IJwtService _jwtService = jwtService;
+    private readonly ICloudinaryService _cloudinary = cloudinary;
     private readonly IValidator<UserLoginViewModel> _loginValidator = loginValidator;
     private readonly IValidator<UserRegistrationViewModel> _registrationValidator = registrationValidator;
 
-    public async Task<string> RegisterAsync(UserRegistrationViewModel userRegistration)
+    public async Task<UserResponse> RegisterAsync(UserRegistrationViewModel userRegistration)
     {
         ValidationResult validationResult = await _registrationValidator.ValidateAsync(userRegistration);
         if (validationResult.IsValid)
         {
             Guid id = Guid.NewGuid();
             List<string> accountsId = []; //TODO: implement serivce communication
-            string profileImageUrl = string.Empty; //TODO: implement image uploading services
 
-            User user = new()
+            User user = _mapper.Map<User>(userRegistration);
+            user.Id = id;
+            user.AccountsId = accountsId;
+            if (userRegistration.ProfileImage != null)
             {
-                Id = id,
-                UserName = userRegistration.UserName,
-                Email = userRegistration.Email,
-                AccountsId = accountsId,
-                ProfileImageUrl = profileImageUrl,
-            };
-
-            IdentityResult result = await _userManager.CreateAsync(user, userRegistration.Password);
-            if (!result.Succeeded)
-            {
-                string errorMessage = string.Empty;
-                foreach (IdentityError error in result.Errors)
-                    errorMessage += string.Join(", ", error.Description);
-
-                throw new($"Register failed:\n{errorMessage}");
+                ImageUploadResult imageUploadResult = await _cloudinary.UploadPhotoAsync(userRegistration.ProfileImage);
+                user.ProfileImageUrl = imageUploadResult.Url.ToString();
             }
 
-            await _signInManager.SignInAsync(user, true);
-            return _jwtService.GenerateToken(user);
+            IdentityResult result = await _userManager.CreateAsync(user, userRegistration.Password);
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, true);
+
+                UserResponse userResponse = _mapper.Map<UserResponse>(user);
+                userResponse.Token = _jwtService.GenerateToken(user);
+
+                return userResponse;
+            }
+            else
+            {
+                throw new(string.Join(", ", result.Errors.Select(error => error.Description)));
+            }
         }
         else
         {
-            throw new NotValidException(string.Join("\n", validationResult.Errors.Select(x => x.ErrorMessage)));
+            throw new NotValidException(string.Join(", ", validationResult.Errors.Select(error => error.ErrorMessage)));
         }
     }
 
@@ -80,22 +89,27 @@ public class AuthService(
         }
         else
         {
-            throw new NotValidException(string.Join("\n", validationResult.Errors.Select(x => x.ErrorMessage)));
+            throw new NotValidException(string.Join("\n", validationResult.Errors.Select(error => error.ErrorMessage)));
         }
     }
 
-    public Task LogoutAsync(string userId)
-    {
-        throw new NotImplementedException();
-    }
+    //public Task<Response> LogoutAsync(string id)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
-    public Task<string> RefreshTokenAsync(string refreshToken)
-    {
-        throw new NotImplementedException();
-    }
+    //public Task<Response> UpdateProfileAsync(UserUpdateViewModel userUpdate)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
-    public Task<bool> VerifyTokenAsync(string token)
-    {
-        throw new NotImplementedException();
-    }
+    //public Task<Response> RefreshTokenAsync(string refreshToken)
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    //public Task<Response> VerifyTokenAsync(string token)
+    //{
+    //    throw new NotImplementedException();
+    //}
 }
