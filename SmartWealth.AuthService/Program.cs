@@ -6,6 +6,7 @@ using SmartWealth.AuthService.ViewModels;
 using SmartWealth.AuthService.Utilities.JWT;
 using SmartWealth.AuthService.Utilities.Mappers;
 using SmartWealth.AuthService.Utilities.Validators;
+using SmartWealth.AuthService.Utilities.Cloudinary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
@@ -16,9 +17,11 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>().AddEntityFrameworkStore
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JwtOptions"));
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddTransient<IValidator<UserLoginViewModel>, UserLoginViewModelValidator>();
 builder.Services.AddTransient<IValidator<UserRegistrationViewModel>, UserRegistrationViewModelValidator>();
 
@@ -38,6 +41,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
