@@ -1,7 +1,7 @@
-﻿using SmartWealth.AuthService.Services;
-using SmartWealth.AuthService.ViewModels;
+﻿using SmartWealth.AuthService.ViewModels;
 using SmartWealth.AuthService.ViewModels.DTO;
 using SmartWealth.AuthService.Utilities.Exceptions;
+using SmartWealth.AuthService.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
@@ -14,9 +14,29 @@ public class AuthController(IAuthService service) : Controller
     private readonly IAuthService _service = service;
     private readonly Response _response = new();
 
+    [Authorize]
+    [HttpGet("exist/{id:guid}")]
+    public async Task<IActionResult> IsUserExist(Guid id)
+    {
+        try
+        {
+            _response.Data = await _service.IsUserExistAsync(id);
+            _response.Message = string.Empty;
+
+            return Ok(_response);
+        }
+        catch (Exception exception)
+        {
+            _response.IsSuccess = false;
+            _response.Message = exception.Message;
+
+            return BadRequest(_response);
+        }
+    }
+
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] UserRegistrationViewModel userRegistration)
+    public async Task<IActionResult> Register([FromForm] UserRegistrationViewModel userRegistration)
     {
         try
         {

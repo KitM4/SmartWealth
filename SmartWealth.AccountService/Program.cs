@@ -2,9 +2,11 @@ using FluentValidation;
 using SmartWealth.AccountService.Models;
 using SmartWealth.AccountService.Services;
 using SmartWealth.AccountService.Database;
+using SmartWealth.AccountService.Utilities;
 using SmartWealth.AccountService.ViewModels;
 using SmartWealth.AccountService.Repositories;
 using SmartWealth.AccountService.Utilities.Mapping;
+using SmartWealth.AccountService.Services.Interfaces;
 using SmartWealth.AccountService.Utilities.Validators;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +24,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.AddAppAuthetication();
+builder.Services.AddAuthorization();
+
 WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -34,7 +39,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();

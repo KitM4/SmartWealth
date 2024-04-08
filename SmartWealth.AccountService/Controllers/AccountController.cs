@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SmartWealth.AccountService.Services;
-using SmartWealth.AccountService.ViewModels;
+﻿using SmartWealth.AccountService.ViewModels;
+using SmartWealth.AccountService.Services.Interfaces;
 using SmartWealth.AccountService.Utilities.Exceptions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SmartWealth.AccountService.Controllers;
 
@@ -11,6 +12,7 @@ public class AccountController(IAccountService service) : Controller
 {
     private readonly IAccountService _service = service;
 
+    [Authorize]
     [HttpGet("all")]
     public async Task<IActionResult> GetAccounts()
     {
@@ -24,8 +26,9 @@ public class AccountController(IAccountService service) : Controller
         }
     }
 
+    [Authorize]
     [HttpGet("user/{userId:guid}")]
-    public async Task<IActionResult> GetAccountsByUser(string userId)
+    public async Task<IActionResult> GetAccountsByUser(Guid userId)
     {
         try
         {
@@ -37,6 +40,7 @@ public class AccountController(IAccountService service) : Controller
         }
     }
 
+    [Authorize]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetAccount(Guid id)
     {
@@ -54,6 +58,7 @@ public class AccountController(IAccountService service) : Controller
         }
     }
 
+    [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> CreateAccount([FromBody] AccountViewModel createdAccount)
     {
@@ -72,6 +77,7 @@ public class AccountController(IAccountService service) : Controller
         }
     }
 
+    [Authorize]
     [HttpPut("edit/{id:guid}")]
     public async Task<IActionResult> EditAccount(Guid id, [FromBody] AccountViewModel editedAccount)
     {
@@ -94,6 +100,7 @@ public class AccountController(IAccountService service) : Controller
         }
     }
 
+    [Authorize]
     [HttpDelete("delete/{id:guid}")]
     public async Task<IActionResult> DeleteAccount(Guid id)
     {
@@ -112,8 +119,9 @@ public class AccountController(IAccountService service) : Controller
         }
     }
 
-    [HttpPost("defaults/{userId:guid}")]
-    public async Task<IActionResult> GenerateDefaultAccounts(string userId)
+    [Authorize]
+    [HttpGet("defaults/{userId:guid}")]
+    public async Task<IActionResult> GenerateDefaultAccounts(Guid userId)
     {
         try
         {

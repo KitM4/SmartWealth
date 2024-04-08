@@ -2,6 +2,7 @@
 using CloudinaryDotNet.Actions;
 using SmartWealth.AuthService.Utilities.Cloudinary;
 using Microsoft.Extensions.Options;
+using SmartWealth.AuthService.Services.Interfaces;
 
 namespace SmartWealth.AuthService.Services;
 
@@ -12,7 +13,6 @@ public class CloudinaryService(IOptions<CloudinarySettings> options) : ICloudina
     public async Task<ImageUploadResult> UploadPhotoAsync(IFormFile file)
     {
         ImageUploadResult result = new();
-
         if (file.Length > 0)
         {
             using Stream stream = file.OpenReadStream();

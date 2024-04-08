@@ -5,6 +5,7 @@ using SmartWealth.AuthService.Models;
 using SmartWealth.AuthService.Utilities.JWT;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using SmartWealth.AuthService.Services.Interfaces;
 
 namespace SmartWealth.AuthService.Services;
 

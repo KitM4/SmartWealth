@@ -1,6 +1,6 @@
 ﻿using SmartWealth.AuthService.Models;
 
-namespace SmartWealth.AuthService.Services;
+namespace SmartWealth.AuthService.Services.Interfaces;
 
 public interface IJwtService
 {

@@ -5,6 +5,7 @@ using SmartWealth.AccountService.Models;
 using SmartWealth.AccountService.ViewModels;
 using SmartWealth.AccountService.Repositories;
 using SmartWealth.AccountService.Utilities.Enums;
+using SmartWealth.AccountService.Services.Interfaces;
 using SmartWealth.AccountService.Utilities.Exceptions;
 
 namespace SmartWealth.AccountService.Services;
@@ -20,10 +21,10 @@ public class AccountService(IMapper mapper, IRepository<Account> repository, IVa
         return await _repository.GetAllAsync();
     }
 
-    public async Task<List<Account>> GetAccountsByUserAsync(string userId)
+    public async Task<List<Account>> GetAccountsByUserAsync(Guid userId)
     {
         List<Account> accounts = await _repository.GetAllAsync();
-        return accounts.Where(account => account.UserId == userId).ToList();
+        return accounts.Where(account => account.UserId == userId.ToString()).ToList();
     }
 
     public async Task<Account> GetAccountAsync(Guid id)
@@ -68,11 +69,8 @@ public class AccountService(IMapper mapper, IRepository<Account> repository, IVa
         await _repository.DeleteAsync(id);
     }
         
-    public async Task<List<string>> GenerateDefaultAccountsAsync(string userId)
+    public async Task<List<string>> GenerateDefaultAccountsAsync(Guid userId)
     {
-        if (!Guid.TryParse(userId, out Guid _))
-            throw new NotValidException("User ID is not valid");
-
         List<string> accountsId = [];
 
         Account cashAccount = new()
@@ -80,8 +78,8 @@ public class AccountService(IMapper mapper, IRepository<Account> repository, IVa
             Id = Guid.NewGuid(),
             Name = "Cash",
             AccountType = AccountType.Cash,
-            UserId = userId,
-            TransactionTemplatesId = [], // Generate default templates
+            UserId = userId.ToString(),
+            TransactionTemplatesId = [], // TODO: Generate default templates
             TransactionHistoryId = [],
             Balance = 0m,
         };
@@ -93,8 +91,8 @@ public class AccountService(IMapper mapper, IRepository<Account> repository, IVa
             Id = Guid.NewGuid(),
             Name = "Card",
             AccountType = AccountType.Card,
-            UserId = userId,
-            TransactionTemplatesId = [], // Generate defaults templates
+            UserId = userId.ToString(),
+            TransactionTemplatesId = [], // TODO: Generate defaults templates
             TransactionHistoryId = [],
             Balance = 0m,
         };
