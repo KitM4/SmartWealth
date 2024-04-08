@@ -1,6 +1,6 @@
 ﻿using CloudinaryDotNet.Actions;
 
-namespace SmartWealth.AuthService.Services;
+namespace SmartWealth.AuthService.Services.Interfaces;
 
 public interface ICloudinaryService
 {

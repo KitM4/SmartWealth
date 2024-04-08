@@ -22,9 +22,6 @@ public class AccountRepository(DatabaseContext context) : IRepository<Account>
 
     public async Task AddAsync(Account item)
     {
-        if (_context.Accounts.Any(account => account.Name.ToLower() == item.Name.ToLower()))
-            throw new AlreadyExistException(item);
-
         await _context.Accounts.AddAsync(item);
         await _context.SaveChangesAsync();
     }
