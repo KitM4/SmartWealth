@@ -5,12 +5,16 @@ using SmartWealth.TransactionService.Models;
 using SmartWealth.TransactionService.ViewModels;
 using SmartWealth.TransactionService.Repositories;
 using SmartWealth.TransactionService.Utilities.Exceptions;
+using SmartWealth.TransactionService.Services.Interfaces;
+using SmartWealth.TransactionService.Utilities.Enums;
+using SmartWealth.TransactionService.ViewModels.DTO;
 
 namespace SmartWealth.TransactionService.Services;
 
-public class TransactionService(IMapper mapper, IRepository<Transaction> repository, IValidator<TransactionViewModel> validator) : ITransactionService
+public class TransactionService(IMapper mapper, IHttpService httpService, IRepository<Transaction> repository, IValidator<TransactionViewModel> validator) : ITransactionService
 {
     private readonly IMapper _mapper = mapper;
+    private readonly IHttpService _httpService = httpService;
     private readonly IRepository<Transaction> _repository = repository;
     private readonly IValidator<TransactionViewModel> _validator = validator;
 
@@ -30,7 +34,7 @@ public class TransactionService(IMapper mapper, IRepository<Transaction> reposit
         return await _repository.GetAsync(id);
     }
 
-    public async Task CreateTransactionAsync(TransactionViewModel createdTransaction)
+    public async Task<decimal> CreateTransactionAsync(TransactionViewModel createdTransaction)
     {
         ValidationResult validationResult = await _validator.ValidateAsync(createdTransaction);
         if (validationResult.IsValid)
@@ -40,6 +44,17 @@ public class TransactionService(IMapper mapper, IRepository<Transaction> reposit
             transaction.CreatedAt = DateTime.UtcNow;
 
             await _repository.AddAsync(transaction);
+
+            Request request = new()
+            {
+                ApiType = ApiType.GET,
+                ContentType = ContentType.Json,
+                Url = $"https://localhost:7185/api/account/modify/{createdTransaction.AccountId}/{createdTransaction.Amount}",
+                AccessToken = createdTransaction.AccessToken,
+            };
+
+            Response apiResponse = await _httpService.SendAsync(request);
+            return apiResponse.IsSuccess ? decimal.Parse(apiResponse.Data?.ToString()!) : throw new(apiResponse.Message);
         }
         else
         {

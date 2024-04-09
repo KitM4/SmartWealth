@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SmartWealth.TransactionService.Services;
 using SmartWealth.TransactionService.ViewModels;
 using SmartWealth.TransactionService.Utilities.Exceptions;
+using SmartWealth.TransactionService.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SmartWealth.TransactionService.Controllers;
 
@@ -11,6 +12,7 @@ public class TransactionController(ITransactionService service) : Controller
 {
     private readonly ITransactionService _service = service;
 
+    [Authorize]
     [HttpGet("all")]
     public async Task<IActionResult> GetTransactions()
     {
@@ -24,6 +26,7 @@ public class TransactionController(ITransactionService service) : Controller
         }
     }
 
+    [Authorize]
     [HttpGet("account/{id:guid}")]
     public async Task<IActionResult> GetTransactionsByAccount(string id)
     {
@@ -37,6 +40,7 @@ public class TransactionController(ITransactionService service) : Controller
         }
     }
 
+    [Authorize]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetTransaction(Guid id)
     {
@@ -54,6 +58,7 @@ public class TransactionController(ITransactionService service) : Controller
         }
     }
 
+    [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> CreateTransaction([FromBody] TransactionViewModel createdTransaction)
     {
@@ -72,6 +77,7 @@ public class TransactionController(ITransactionService service) : Controller
         }
     }
 
+    [Authorize]
     [HttpPut("edit/{id:guid}")]
     public async Task<IActionResult> EditTransaction(Guid id, [FromBody] TransactionViewModel editedTransaction)
     {
@@ -94,6 +100,7 @@ public class TransactionController(ITransactionService service) : Controller
         }
     }
 
+    [Authorize]
     [HttpDelete("delete/{id:guid}")]
     public async Task<IActionResult> DeleteTransaction(Guid id)
     {

@@ -101,4 +101,16 @@ public class AccountService(IMapper mapper, IRepository<Account> repository, IVa
 
         return accountsId;
     }
+
+    public async Task<decimal> ModifyBalanceAsync(Guid id, decimal ammount)
+    {
+        if (ammount == 0m) throw new("Ammount cannot be zero");
+
+        Account account = await _repository.GetAsync(id);
+        account.Balance += ammount;
+
+        return account.Balance;
+
+        //await _repository.UpdateAsync(account); // ?????
+    }
 }

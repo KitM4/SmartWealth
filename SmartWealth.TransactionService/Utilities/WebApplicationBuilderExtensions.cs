@@ -1,17 +1,16 @@
 ﻿using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 
-namespace SmartWealth.AuthService.Utilities;
+namespace SmartWealth.TransactionService.Utilities;
 
 public static class WebApplicationBuilderExtensions
 {
     public static WebApplicationBuilder AddAppAuthetication(this WebApplicationBuilder builder)
     {
-        string secret = builder.Configuration["ApiSettings:JwtOptions:Secret"]!;
-        string issuer = builder.Configuration["ApiSettings:JwtOptions:Issuer"]!;
-        string audience = builder.Configuration["ApiSettings:JwtOptions:Audience"]!;
+        string secret = builder.Configuration["ApiSettings:Secret"]!;
+        string issuer = builder.Configuration["ApiSettings:Issuer"]!;
+        string audience = builder.Configuration["ApiSettings:Audience"]!;
 
         byte[] key = Encoding.ASCII.GetBytes(secret);
 
@@ -33,22 +32,5 @@ public static class WebApplicationBuilderExtensions
         });
 
         return builder;
-    }
-
-    public static void AddValidationErrorHandling(this IServiceCollection services)
-    {
-        services.Configure<ApiBehaviorOptions>(options =>
-        {
-            options.InvalidModelStateResponseFactory = context =>
-            {
-                List<string> errors = context.ModelState
-                    .Where(e => e.Value != null && e.Value.Errors.Count > 0)
-                    .SelectMany(e => e.Value!.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
-                return new BadRequestObjectResult(new { error = string.Join(". ", errors) });
-            };
-        });
     }
 }

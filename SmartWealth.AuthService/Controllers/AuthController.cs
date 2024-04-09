@@ -1,9 +1,8 @@
-﻿using SmartWealth.AuthService.ViewModels;
-using SmartWealth.AuthService.ViewModels.DTO;
-using SmartWealth.AuthService.Utilities.Exceptions;
-using SmartWealth.AuthService.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using SmartWealth.AuthService.ViewModels;
+using SmartWealth.AuthService.Services.Interfaces;
+using SmartWealth.AuthService.Utilities.Exceptions;
 
 namespace SmartWealth.AuthService.Controllers;
 
@@ -36,12 +35,12 @@ public class AuthController(IAuthService service) : Controller
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromForm] UserRegistrationViewModel userRegistration)
+    public async Task<IActionResult> Register([FromForm] UserViewModel userViewModel)
     {
         try
         {
-            _response.Data = await _service.RegisterAsync(userRegistration);
-            _response.Message = "User is successfully registered";
+            _response.Data = await _service.RegisterAsync(userViewModel);
+            _response.Message = "User successfully registered";
 
             return Ok(_response);
         }
@@ -56,12 +55,12 @@ public class AuthController(IAuthService service) : Controller
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] UserLoginViewModel userLogin)
+    public async Task<IActionResult> Login([FromBody] UserViewModel userViewModel)
     {
         try
         {
-            _response.Data = await _service.LoginAsync(userLogin);
-            _response.Message = "User is successfully logged in";
+            _response.Data = await _service.LoginAsync(userViewModel);
+            _response.Message = "User successfully logged in";
 
             return Ok(_response);
         }
@@ -70,7 +69,34 @@ public class AuthController(IAuthService service) : Controller
             _response.IsSuccess = false;
             _response.Message = notFoundException.Message;
 
+            return NotFound(_response);
+        }
+        catch (Exception exception)
+        {
+            _response.IsSuccess = false;
+            _response.Message = exception.Message;
+
             return BadRequest(_response);
+        }
+    }
+
+    [Authorize]
+    [HttpPost("edit")]
+    public async Task<IActionResult> Edit([FromForm] UserViewModel userViewModel)
+    {
+        try
+        {
+            _response.Data = await _service.UpdateUserAsync(userViewModel);
+            _response.Message = "User successfully updated";
+
+            return Ok(_response);
+        }
+        catch (NotFoundException notFoundException)
+        {
+            _response.IsSuccess = false;
+            _response.Message = notFoundException.Message;
+
+            return NotFound(_response);
         }
         catch (Exception exception)
         {

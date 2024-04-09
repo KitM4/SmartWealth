@@ -1,4 +1,4 @@
-﻿using SmartWealth.AuthService.ViewModels.DTO;
+﻿using SmartWealth.AuthService.ViewModels;
 
 namespace SmartWealth.AuthService.Services.Interfaces;
 
