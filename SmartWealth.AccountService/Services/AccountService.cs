@@ -24,7 +24,7 @@ public class AccountService(IMapper mapper, IRepository<Account> repository, IVa
     public async Task<List<Account>> GetAccountsByUserAsync(Guid userId)
     {
         List<Account> accounts = await _repository.GetAllAsync();
-        return accounts.Where(account => account.UserId == userId.ToString()).ToList();
+        return accounts.Where(account => account.UserId == userId).ToList();
     }
 
     public async Task<Account> GetAccountAsync(Guid id)
@@ -32,85 +32,70 @@ public class AccountService(IMapper mapper, IRepository<Account> repository, IVa
         return await _repository.GetAsync(id);
     }
 
-    public async Task CreateAccountAsync(AccountViewModel createdAccount)
+    public async Task<Account> CreateAccountAsync(AccountViewModel accountViewModel)
     {
-        ValidationResult validationResult = await _validator.ValidateAsync(createdAccount);
-        if (validationResult.IsValid)
+        ValidationResult validationResult = await _validator.ValidateAsync(accountViewModel);
+        if (!validationResult.IsValid)
         {
-            Account account = _mapper.Map<Account>(createdAccount);
-            account.Id = Guid.NewGuid();
+            throw new NotValidException(string.Join(", ", validationResult.Errors.Select(error => error.ErrorMessage)));
+        }
 
-            await _repository.AddAsync(account);
-        }
-        else
-        {
-            throw new NotValidException(string.Join("\n", validationResult.Errors.Select(x => x.ErrorMessage)));
-        }
+        Account account = _mapper.Map<Account>(accountViewModel);
+        account.Id = Guid.NewGuid();
+
+        await _repository.AddAsync(account);
+        return account;
     }
 
-    public async Task EditAccountAsync(Guid id, AccountViewModel editedAccount)
+    public async Task<Account> EditAccountAsync(AccountViewModel accountViewModel)
     {
-        ValidationResult validationResult = await _validator.ValidateAsync(editedAccount);
-        if (validationResult.IsValid)
+        ValidationResult validationResult = await _validator.ValidateAsync(accountViewModel);
+        if (!validationResult.IsValid)
         {
-            Account account = _mapper.Map<Account>(editedAccount);
-            account.Id = id;
+            throw new NotValidException(string.Join(", ", validationResult.Errors.Select(error => error.ErrorMessage)));
+        }
 
-            await _repository.UpdateAsync(account);
-        }
-        else
-        {
-            throw new NotValidException(string.Join("\n", validationResult.Errors.Select(x => x.ErrorMessage)));
-        }
+        Account account = _mapper.Map<Account>(accountViewModel);
+
+        await _repository.UpdateAsync(account);
+        return await _repository.GetAsync(account.Id);
     }
 
-    public async Task DeleteAccountAsync(Guid id)
+    public async Task<bool> DeleteAccountAsync(Guid id)
     {
-        await _repository.DeleteAsync(id);
+        return await _repository.DeleteAsync(id);
     }
         
-    public async Task<List<string>> GenerateDefaultAccountsAsync(Guid userId)
+    public async Task<List<Guid>> GenerateDefaultAccountsAsync(Guid userId)
     {
-        List<string> accountsId = [];
+        List<Guid> accountsId = [];
 
         Account cashAccount = new()
         {
             Id = Guid.NewGuid(),
-            Name = "Cash",
+            Name = "My Cash",
             AccountType = AccountType.Cash,
-            UserId = userId.ToString(),
+            UserId = userId,
             TransactionTemplatesId = [], // TODO: Generate default templates
             TransactionHistoryId = [],
             Balance = 0m,
         };
-        accountsId.Add(cashAccount.Id.ToString());
+        accountsId.Add(cashAccount.Id);
         await _repository.AddAsync(cashAccount);
 
         Account cardAccount = new()
         {
             Id = Guid.NewGuid(),
-            Name = "Card",
+            Name = "My Card",
             AccountType = AccountType.Card,
-            UserId = userId.ToString(),
+            UserId = userId,
             TransactionTemplatesId = [], // TODO: Generate defaults templates
             TransactionHistoryId = [],
             Balance = 0m,
         };
-        accountsId.Add(cardAccount.Id.ToString());
+        accountsId.Add(cardAccount.Id);
         await _repository.AddAsync(cardAccount);
 
         return accountsId;
-    }
-
-    public async Task<decimal> ModifyBalanceAsync(Guid id, decimal ammount)
-    {
-        if (ammount == 0m) throw new("Ammount cannot be zero");
-
-        Account account = await _repository.GetAsync(id);
-        account.Balance += ammount;
-
-        return account.Balance;
-
-        //await _repository.UpdateAsync(account); // ?????
     }
 }

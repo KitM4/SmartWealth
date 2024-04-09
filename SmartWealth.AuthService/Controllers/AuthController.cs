@@ -11,7 +11,6 @@ namespace SmartWealth.AuthService.Controllers;
 public class AuthController(IAuthService service) : Controller
 {
     private readonly IAuthService _service = service;
-    private readonly Response _response = new();
 
     [Authorize]
     [HttpGet("exist/{id:guid}")]
@@ -19,17 +18,11 @@ public class AuthController(IAuthService service) : Controller
     {
         try
         {
-            _response.Data = await _service.IsUserExistAsync(id);
-            _response.Message = string.Empty;
-
-            return Ok(_response);
+            return Ok(await _service.IsUserExistAsync(id));
         }
         catch (Exception exception)
         {
-            _response.IsSuccess = false;
-            _response.Message = exception.Message;
-
-            return BadRequest(_response);
+            return BadRequest(exception.Message);
         }
     }
 
@@ -39,17 +32,11 @@ public class AuthController(IAuthService service) : Controller
     {
         try
         {
-            _response.Data = await _service.RegisterAsync(userViewModel);
-            _response.Message = "User successfully registered";
-
-            return Ok(_response);
+            return Ok(await _service.RegisterAsync(userViewModel));
         }
         catch (Exception exception)
         {
-            _response.IsSuccess = false;
-            _response.Message = exception.Message;
-
-            return BadRequest(_response);
+            return BadRequest(exception.Message);
         }
     }
 
@@ -59,24 +46,15 @@ public class AuthController(IAuthService service) : Controller
     {
         try
         {
-            _response.Data = await _service.LoginAsync(userViewModel);
-            _response.Message = "User successfully logged in";
-
-            return Ok(_response);
+            return Ok(await _service.LoginAsync(userViewModel));
         }
         catch (NotFoundException notFoundException)
         {
-            _response.IsSuccess = false;
-            _response.Message = notFoundException.Message;
-
-            return NotFound(_response);
+            return NotFound(notFoundException.Message);
         }
         catch (Exception exception)
         {
-            _response.IsSuccess = false;
-            _response.Message = exception.Message;
-
-            return BadRequest(_response);
+            return BadRequest(exception.Message);
         }
     }
 
@@ -86,24 +64,15 @@ public class AuthController(IAuthService service) : Controller
     {
         try
         {
-            _response.Data = await _service.UpdateUserAsync(userViewModel);
-            _response.Message = "User successfully updated";
-
-            return Ok(_response);
+            return Ok(await _service.UpdateUserAsync(userViewModel));
         }
         catch (NotFoundException notFoundException)
         {
-            _response.IsSuccess = false;
-            _response.Message = notFoundException.Message;
-
-            return NotFound(_response);
+            return NotFound(notFoundException.Message);
         }
         catch (Exception exception)
         {
-            _response.IsSuccess = false;
-            _response.Message = exception.Message;
-
-            return BadRequest(_response);
+            return BadRequest(exception.Message);
         }
     }
 }

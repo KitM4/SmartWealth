@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -34,5 +35,22 @@ public static class WebApplicationBuilderExtensions
         });
 
         return builder;
+    }
+
+    public static void AddValidationErrorHandling(this IServiceCollection services)
+    {
+        services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                List<string> errors = context.ModelState
+                    .Where(e => e.Value != null && e.Value.Errors.Count > 0)
+                    .SelectMany(e => e.Value!.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                return new BadRequestObjectResult(new { error = string.Join(". ", errors) });
+            };
+        });
     }
 }

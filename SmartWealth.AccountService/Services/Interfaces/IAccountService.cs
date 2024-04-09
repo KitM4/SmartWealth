@@ -11,13 +11,11 @@ public interface IAccountService
 
     public Task<Account> GetAccountAsync(Guid id);
 
-    public Task CreateAccountAsync(AccountViewModel createdAccount);
+    public Task<Account> CreateAccountAsync(AccountViewModel createdAccount);
 
-    public Task EditAccountAsync(Guid id, AccountViewModel editedAccount);
+    public Task<Account> EditAccountAsync(AccountViewModel editedAccount);
 
-    public Task DeleteAccountAsync(Guid id);
+    public Task<bool> DeleteAccountAsync(Guid id);
 
-    public Task<List<string>> GenerateDefaultAccountsAsync(Guid userId);
-
-    public Task<decimal> ModifyBalanceAsync(Guid id, decimal ammount);
+    public Task<List<Guid>> GenerateDefaultAccountsAsync(Guid userId);
 }

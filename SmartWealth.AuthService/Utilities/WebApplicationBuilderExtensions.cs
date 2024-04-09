@@ -1,7 +1,7 @@
 ﻿using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 
 namespace SmartWealth.AuthService.Utilities;
 

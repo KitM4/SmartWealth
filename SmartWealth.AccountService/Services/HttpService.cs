@@ -1,11 +1,11 @@
 ﻿using System.Text;
 using System.Reflection;
 using Newtonsoft.Json;
-using SmartWealth.AuthService.ViewModels;
-using SmartWealth.AuthService.Utilities.Enums;
-using SmartWealth.AuthService.Services.Interfaces;
+using SmartWealth.AccountService.ViewModels;
+using SmartWealth.AccountService.Utilities.Enums;
+using SmartWealth.AccountService.Services.Interfaces;
 
-namespace SmartWealth.AuthService.Services;
+namespace SmartWealth.AccountService.Services;
 
 public class HttpService(IHttpClientFactory httpClientFactory) : IHttpService
 {
