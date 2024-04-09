@@ -1,7 +1,7 @@
-﻿using SmartWealth.AccountService.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SmartWealth.AccountService.Models;
 using SmartWealth.AccountService.Database;
 using SmartWealth.AccountService.Utilities.Exceptions;
-using Microsoft.EntityFrameworkCore;
 
 namespace SmartWealth.AccountService.Repositories;
 
@@ -40,9 +40,9 @@ public class AccountRepository(DatabaseContext context) : IRepository<Account>
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
         _context.Accounts.Remove(await GetAsync(id));
-        await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync() > 0;
     }
 }

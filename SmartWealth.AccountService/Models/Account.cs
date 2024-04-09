@@ -10,11 +10,11 @@ public class Account
 
     public required AccountType AccountType { get; set; }
 
-    public required string UserId { get; set; }
+    public required Guid UserId { get; set; }
 
-    public required List<string> TransactionTemplatesId { get; set; }
+    public required List<Guid> TransactionTemplatesId { get; set; }
 
-    public required List<string> TransactionHistoryId { get; set; }
+    public required List<Guid> TransactionHistoryId { get; set; }
 
     public required decimal Balance { get; set; }
 }

@@ -76,10 +76,9 @@ public class AuthService(
         };
 
         Response apiResponse = await _httpService.SendAsync(request);
-
         if (apiResponse.IsSuccess)
         {
-            List<Guid> accountsId = JsonConvert.DeserializeObject<List<Guid>>(apiResponse.Data?.ToString()!) ?? [];
+            List<Guid> accountsId = JsonConvert.DeserializeObject<List<Guid>>(apiResponse.Data!.ToString()!) ?? [];
             user.AccountsId = accountsId;
             userResponse.AccountsId = accountsId;
 

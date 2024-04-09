@@ -10,5 +10,5 @@ public interface IRepository<T> where T : class
 
     public Task UpdateAsync(T updatedItem);
 
-    public Task DeleteAsync(Guid id);
+    public Task<bool> DeleteAsync(Guid id);
 }

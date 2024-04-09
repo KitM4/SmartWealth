@@ -1,8 +1,8 @@
-﻿using SmartWealth.AccountService.ViewModels;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using SmartWealth.AccountService.ViewModels;
 using SmartWealth.AccountService.Services.Interfaces;
 using SmartWealth.AccountService.Utilities.Exceptions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 
 namespace SmartWealth.AccountService.Controllers;
 
@@ -64,8 +64,7 @@ public class AccountController(IAccountService service) : Controller
     {
         try
         {
-            await _service.CreateAccountAsync(createdAccount);
-            return Created();
+            return Ok(await _service.CreateAccountAsync(createdAccount));
         }
         catch (NotValidException notValidException)
         {
@@ -78,21 +77,20 @@ public class AccountController(IAccountService service) : Controller
     }
 
     [Authorize]
-    [HttpPut("edit/{id:guid}")]
-    public async Task<IActionResult> EditAccount(Guid id, [FromBody] AccountViewModel editedAccount)
+    [HttpPut("edit")]
+    public async Task<IActionResult> EditAccount([FromBody] AccountViewModel editedAccount)
     {
         try
         {
-            await _service.EditAccountAsync(id, editedAccount);
-            return Created();
-        }
-        catch (NotValidException notValidException)
-        {
-            return BadRequest(notValidException.Message);
+            return Ok(await _service.EditAccountAsync(editedAccount));
         }
         catch (NotFoundException notFoundException)
         {
             return NotFound(notFoundException.Message);
+        }
+        catch (NotValidException notValidException)
+        {
+            return BadRequest(notValidException.Message);
         }
         catch (Exception exception)
         {
@@ -106,8 +104,7 @@ public class AccountController(IAccountService service) : Controller
     {
         try
         {
-            await _service.DeleteAccountAsync(id);
-            return NoContent();
+            return Ok(await _service.DeleteAccountAsync(id));
         }
         catch (NotFoundException notFoundException)
         {
@@ -136,21 +133,4 @@ public class AccountController(IAccountService service) : Controller
             return BadRequest(exception.Message);
         }
     }
-
-    // This endpoint is not needed, call EditAccount instead and send AccountResponse instead of decimal
-
-    //[Authorize]
-    //[HttpGet("modify/{id:guid}/{amount:decimal}")]
-    //public async Task<IActionResult> ModifyBalance(Guid id, decimal amount)
-    //{
-    //    try
-    //    {
-    //        await _service.ModifyBalanceAsync(id, amount);
-    //        return NoContent();
-    //    }
-    //    catch (Exception exception)
-    //    {
-    //        return BadRequest(exception.Message);
-    //    }
-    //}
 }
