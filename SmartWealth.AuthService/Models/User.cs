@@ -6,5 +6,5 @@ public class User : IdentityUser<Guid>
 {
     public string? ProfileImageUrl { get; set; }
 
-    public required List<string> AccountsId { get; set; }
+    public required List<Guid> AccountsId { get; set; }
 }

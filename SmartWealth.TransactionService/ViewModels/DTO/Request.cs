@@ -1,6 +1,6 @@
-﻿using SmartWealth.AuthService.Utilities.Enums;
+﻿using SmartWealth.TransactionService.Utilities.Enums;
 
-namespace SmartWealth.AuthService.ViewModels.DTO;
+namespace SmartWealth.TransactionService.ViewModels.DTO;
 
 public class Request
 {
@@ -12,5 +12,5 @@ public class Request
 
     public object? Data { get; set; }
 
-    public string? AccesToken { get; set; }
+    public string? AccessToken { get; set; }
 }

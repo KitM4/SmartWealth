@@ -1,4 +1,4 @@
-﻿namespace SmartWealth.AuthService.ViewModels.DTO;
+﻿namespace SmartWealth.AuthService.ViewModels;
 
 public class Response
 {

@@ -1,4 +1,4 @@
-﻿namespace SmartWealth.AuthService.ViewModels.DTO;
+﻿namespace SmartWealth.AuthService.ViewModels;
 
 public class UserResponse
 {
@@ -8,9 +8,9 @@ public class UserResponse
 
     public string Email { get; set; } = string.Empty;
 
-    public string Token { get; set; } = string.Empty;
-
-    public List<string> AccountsId { get; set; } = [];
+    public string AccessToken { get; set; } = string.Empty;
 
     public string? ProfileImageUrl { get; set; } = string.Empty;
+
+    public List<Guid> AccountsId { get; set; } = [];
 }

@@ -1,7 +1,7 @@
 ﻿using SmartWealth.TransactionService.Models;
 using SmartWealth.TransactionService.ViewModels;
 
-namespace SmartWealth.TransactionService.Services;
+namespace SmartWealth.TransactionService.Services.Interfaces;
 
 public interface ITransactionService
 {
@@ -11,7 +11,7 @@ public interface ITransactionService
 
     public Task<Transaction> GetTransactionAsync(Guid id);
 
-    public Task CreateTransactionAsync(TransactionViewModel createdTransaction);
+    public Task<decimal> CreateTransactionAsync(TransactionViewModel createdTransaction);
 
     public Task EditTransactionAsync(Guid id, TransactionViewModel editedTransaction);
 

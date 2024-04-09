@@ -9,4 +9,6 @@ public class TransactionViewModel
     public string AccountId { get; set; } = string.Empty;
 
     public decimal Amount { get; set; } = 0m;
+
+    public string AccessToken { get; set; } = string.Empty;
 }

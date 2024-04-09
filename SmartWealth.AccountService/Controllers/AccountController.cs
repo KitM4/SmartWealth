@@ -136,4 +136,21 @@ public class AccountController(IAccountService service) : Controller
             return BadRequest(exception.Message);
         }
     }
+
+    // This endpoint is not needed, call EditAccount instead and send AccountResponse instead of decimal
+
+    //[Authorize]
+    //[HttpGet("modify/{id:guid}/{amount:decimal}")]
+    //public async Task<IActionResult> ModifyBalance(Guid id, decimal amount)
+    //{
+    //    try
+    //    {
+    //        await _service.ModifyBalanceAsync(id, amount);
+    //        return NoContent();
+    //    }
+    //    catch (Exception exception)
+    //    {
+    //        return BadRequest(exception.Message);
+    //    }
+    //}
 }

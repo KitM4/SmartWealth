@@ -1,11 +1,11 @@
 ﻿using System.Text;
 using System.Reflection;
 using Newtonsoft.Json;
-using SmartWealth.AuthService.ViewModels;
-using SmartWealth.AuthService.Utilities.Enums;
-using SmartWealth.AuthService.Services.Interfaces;
+using SmartWealth.TransactionService.Services.Interfaces;
+using SmartWealth.TransactionService.Utilities.Enums;
+using SmartWealth.TransactionService.ViewModels.DTO;
 
-namespace SmartWealth.AuthService.Services;
+namespace SmartWealth.TransactionService.Services;
 
 public class HttpService(IHttpClientFactory httpClientFactory) : IHttpService
 {
@@ -16,9 +16,9 @@ public class HttpService(IHttpClientFactory httpClientFactory) : IHttpService
     {
         try
         {
-            using HttpClient httpClient = _httpClientFactory.CreateClient("AuthAPI");
+            using HttpClient httpClient = _httpClientFactory.CreateClient("TransactionAPI");
             using HttpRequestMessage requestMessage = new();
-            
+
             PrepareContentType(request, requestMessage);
             PrepareData(request, requestMessage);
             PrepareApiType(request, requestMessage);
@@ -44,9 +44,9 @@ public class HttpService(IHttpClientFactory httpClientFactory) : IHttpService
     {
         message.Method = request.ApiType switch
         {
-            ApiType.Post => HttpMethod.Post,
-            ApiType.Delete => HttpMethod.Delete,
-            ApiType.Put => HttpMethod.Put,
+            ApiType.POST => HttpMethod.Post,
+            ApiType.DELETE => HttpMethod.Delete,
+            ApiType.PUT => HttpMethod.Put,
             _ => HttpMethod.Get,
         };
     }

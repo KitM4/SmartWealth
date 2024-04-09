@@ -18,4 +18,6 @@ public interface IAccountService
     public Task DeleteAccountAsync(Guid id);
 
     public Task<List<string>> GenerateDefaultAccountsAsync(Guid userId);
+
+    public Task<decimal> ModifyBalanceAsync(Guid id, decimal ammount);
 }

@@ -1,4 +1,6 @@
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using SmartWealth.AuthService.Models;
 using SmartWealth.AuthService.Services;
 using SmartWealth.AuthService.Database;
@@ -9,8 +11,6 @@ using SmartWealth.AuthService.Utilities.Mappers;
 using SmartWealth.AuthService.Services.Interfaces;
 using SmartWealth.AuthService.Utilities.Validators;
 using SmartWealth.AuthService.Utilities.Cloudinary;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +25,7 @@ builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JwtOptions"));
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
-builder.Services.AddTransient<IValidator<UserLoginViewModel>, UserLoginViewModelValidator>();
-builder.Services.AddTransient<IValidator<UserRegistrationViewModel>, UserRegistrationViewModelValidator>();
+builder.Services.AddTransient<IValidator<UserViewModel>, UserViewModelValidatior>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
@@ -36,6 +35,7 @@ builder.Services.AddSwaggerGen();
 
 builder.AddAppAuthetication();
 builder.Services.AddAuthorization();
+builder.Services.AddValidationErrorHandling();
 
 WebApplication app = builder.Build();
 
@@ -51,7 +51,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();
