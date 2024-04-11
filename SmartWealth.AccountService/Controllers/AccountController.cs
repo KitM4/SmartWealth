@@ -122,7 +122,7 @@ public class AccountController(IAccountService service) : Controller
     {
         try
         {
-            return Ok(await _service.GenerateDefaultAccountsAsync(userId));
+            return Ok(await _service.GenerateDefaultAccountAsync(userId));
         }
         catch (NotValidException notValidException)
         {

@@ -12,7 +12,6 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
         builder
             .Property(transaction => transaction.CategoryId)
-            .HasMaxLength(36)
             .IsRequired();
 
         builder
@@ -22,7 +21,6 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
         builder
             .Property(transaction => transaction.AccountId)
-            .HasMaxLength(36)
             .IsRequired();
 
         builder

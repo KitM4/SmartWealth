@@ -1,4 +1,6 @@
 using FluentValidation;
+using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 using SmartWealth.TransactionService.Models;
 using SmartWealth.TransactionService.Database;
 using SmartWealth.TransactionService.Services;
@@ -8,9 +10,7 @@ using SmartWealth.TransactionService.Repositories;
 using SmartWealth.TransactionService.Utilities.Mapping;
 using SmartWealth.TransactionService.Utilities.Validators;
 using SmartWealth.TransactionService.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -69,7 +69,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();

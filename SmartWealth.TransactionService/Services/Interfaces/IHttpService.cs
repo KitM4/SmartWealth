@@ -1,4 +1,4 @@
-﻿using SmartWealth.TransactionService.ViewModels.DTO;
+﻿using SmartWealth.TransactionService.ViewModels;
 
 namespace SmartWealth.TransactionService.Services.Interfaces;
 

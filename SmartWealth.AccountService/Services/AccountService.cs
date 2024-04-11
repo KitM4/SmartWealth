@@ -65,14 +65,13 @@ public class AccountService(IMapper mapper, IRepository<Account> repository, IVa
     {
         return await _repository.DeleteAsync(id);
     }
-        
-    public async Task<List<Guid>> GenerateDefaultAccountsAsync(Guid userId)
-    {
-        List<Guid> accountsId = [];
 
+    public async Task<Guid> GenerateDefaultAccountAsync(Guid userId)
+    {
+        Guid id = Guid.NewGuid();
         Account cashAccount = new()
         {
-            Id = Guid.NewGuid(),
+            Id = id,
             Name = "My Cash",
             AccountType = AccountType.Cash,
             UserId = userId,
@@ -80,22 +79,8 @@ public class AccountService(IMapper mapper, IRepository<Account> repository, IVa
             TransactionHistoryId = [],
             Balance = 0m,
         };
-        accountsId.Add(cashAccount.Id);
+
         await _repository.AddAsync(cashAccount);
-
-        Account cardAccount = new()
-        {
-            Id = Guid.NewGuid(),
-            Name = "My Card",
-            AccountType = AccountType.Card,
-            UserId = userId,
-            TransactionTemplatesId = [], // TODO: Generate defaults templates
-            TransactionHistoryId = [],
-            Balance = 0m,
-        };
-        accountsId.Add(cardAccount.Id);
-        await _repository.AddAsync(cardAccount);
-
-        return accountsId;
+        return id;
     }
 }

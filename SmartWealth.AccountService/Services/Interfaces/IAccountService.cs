@@ -17,5 +17,5 @@ public interface IAccountService
 
     public Task<bool> DeleteAccountAsync(Guid id);
 
-    public Task<List<Guid>> GenerateDefaultAccountsAsync(Guid userId);
+    public Task<Guid> GenerateDefaultAccountAsync(Guid userId);
 }

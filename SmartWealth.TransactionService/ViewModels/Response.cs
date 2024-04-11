@@ -1,4 +1,4 @@
-﻿namespace SmartWealth.TransactionService.ViewModels.DTO;
+﻿namespace SmartWealth.TransactionService.ViewModels;
 
 public class Response
 {

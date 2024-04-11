@@ -2,11 +2,11 @@
 
 public class TransactionViewModel
 {
-    public string CategoryId { get; set; } = string.Empty;
+    public Guid CategoryId { get; set; } = Guid.Empty;
 
     public string Note { get; set; } = string.Empty;
 
-    public string AccountId { get; set; } = string.Empty;
+    public Guid AccountId { get; set; } = Guid.Empty;
 
     public decimal Amount { get; set; } = 0m;
 
