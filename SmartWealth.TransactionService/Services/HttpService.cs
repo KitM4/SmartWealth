@@ -3,7 +3,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using SmartWealth.TransactionService.Services.Interfaces;
 using SmartWealth.TransactionService.Utilities.Enums;
-using SmartWealth.TransactionService.ViewModels.DTO;
+using SmartWealth.TransactionService.ViewModels;
 
 namespace SmartWealth.TransactionService.Services;
 
@@ -46,7 +46,7 @@ public class HttpService(IHttpClientFactory httpClientFactory) : IHttpService
         {
             ApiType.POST => HttpMethod.Post,
             ApiType.DELETE => HttpMethod.Delete,
-            ApiType.PUT => HttpMethod.Put,
+            ApiType.Put => HttpMethod.Put,
             _ => HttpMethod.Get,
         };
     }

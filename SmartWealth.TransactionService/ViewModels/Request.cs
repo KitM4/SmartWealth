@@ -1,6 +1,6 @@
 ﻿using SmartWealth.TransactionService.Utilities.Enums;
 
-namespace SmartWealth.TransactionService.ViewModels.DTO;
+namespace SmartWealth.TransactionService.ViewModels;
 
 public class Request
 {

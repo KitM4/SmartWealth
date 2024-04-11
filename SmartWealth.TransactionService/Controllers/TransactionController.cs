@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using SmartWealth.TransactionService.ViewModels;
 using SmartWealth.TransactionService.Utilities.Exceptions;
 using SmartWealth.TransactionService.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 
 namespace SmartWealth.TransactionService.Controllers;
 
@@ -28,7 +28,7 @@ public class TransactionController(ITransactionService service) : Controller
 
     [Authorize]
     [HttpGet("account/{id:guid}")]
-    public async Task<IActionResult> GetTransactionsByAccount(string id)
+    public async Task<IActionResult> GetTransactionsByAccount(Guid id)
     {
         try
         {
@@ -64,8 +64,7 @@ public class TransactionController(ITransactionService service) : Controller
     {
         try
         {
-            await _service.CreateTransactionAsync(createdTransaction);
-            return Created();
+            return Ok(await _service.CreateTransactionAsync(createdTransaction));
         }
         catch (NotValidException notValidException)
         {
@@ -83,8 +82,7 @@ public class TransactionController(ITransactionService service) : Controller
     {
         try
         {
-            await _service.EditTransactionAsync(id, editedTransaction);
-            return Created();
+            return Ok(await _service.EditTransactionAsync(id, editedTransaction));
         }
         catch (NotValidException notValidException)
         {
@@ -106,8 +104,7 @@ public class TransactionController(ITransactionService service) : Controller
     {
         try
         {
-            await _service.DeleteTransactionAsync(id);
-            return NoContent();
+            return Ok(await _service.DeleteTransactionAsync(id));
         }
         catch (NotFoundException notFoundException)
         {

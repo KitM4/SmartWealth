@@ -69,19 +69,19 @@ public class HttpService(IHttpClientFactory httpClientFactory) : IHttpService
         if (request.ContentType == ContentType.MultipartFormData && request.Data != null)
         {
             MultipartFormDataContent content = [];
-            foreach (PropertyInfo propert in request.Data.GetType().GetProperties())
+            foreach (PropertyInfo property in request.Data.GetType().GetProperties())
             {
-                object? value = propert.GetValue(request.Data);
+                object? value = property.GetValue(request.Data);
                 if (value is FormFile file)
                 {
                     if (file != null)
                     {
-                        content.Add(new StreamContent(file.OpenReadStream()), propert.Name, file.FileName);
+                        content.Add(new StreamContent(file.OpenReadStream()), property.Name, file.FileName);
                     }
                 }
                 else
                 {
-                    content.Add(new StringContent(value?.ToString() ?? string.Empty), propert.Name);
+                    content.Add(new StringContent(value?.ToString() ?? string.Empty), property.Name);
                 }
             }
             message.Content = content;

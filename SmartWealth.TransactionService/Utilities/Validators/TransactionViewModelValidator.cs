@@ -8,18 +8,14 @@ public class TransactionViewModelValidator : AbstractValidator<TransactionViewMo
     public TransactionViewModelValidator()
     {
         RuleFor(transaction => transaction.CategoryId)
-            .NotEmpty().WithMessage("The category must be specified")
-            .MaximumLength(Constants.MaxIdLength).WithMessage($"The category ID cannot exceed {Constants.MaxIdLength} characters")
-            .Must(id => Guid.TryParse(id, out _)).WithMessage("Category ID must be a Guid");
+            .NotEmpty().WithMessage("The category must be specified");
 
         RuleFor(transaction => transaction.Note)
             .NotEmpty().WithMessage("The note must be specified.")
             .MaximumLength(Constants.MaxTransactionNoteLength).WithMessage($"The note cannot exceed {Constants.MaxTransactionNoteLength} characters");
 
         RuleFor(transaction => transaction.AccountId)
-            .NotEmpty().WithMessage("The account must be specified")
-            .MaximumLength(Constants.MaxIdLength).WithMessage($"The account ID cannot exceed {Constants.MaxIdLength} characters")
-            .Must(id => Guid.TryParse(id, out _)).WithMessage("Account ID must be a Guid");
+            .NotEmpty().WithMessage("The account must be specified");
 
         RuleFor(transaction => transaction.Amount)
             .NotEqual(Constants.ProhibitedTransactionAmount).WithMessage($"Amount must not be {Constants.ProhibitedTransactionAmount}");
